@@ -142,7 +142,7 @@ do
 done
 
 #**
-mv temp* $GAPATH/$RunName/gen_$GEN_CNT
+#mv temp* $GAPATH/$RunName/gen_$GEN_CNT
 
 echo "Finished simulating Gen : $GEN_CNT"
 let GEN_CNT=$GEN_CNT+1
@@ -224,7 +224,7 @@ do
         #mv $GAPATH/gen_$GEN_CNT/childUpdated.txt $GAPATH/gen_$GEN_CNT/child_$ind.txt
     done
     #**
-    mv temp* $GAPATH/$RunName/gen_$GEN_CNT
+    #mv temp* $GAPATH/$RunName/gen_$GEN_CNT
     
     let GEN_CNT=$GEN_CNT+1
     export GEN_CNT=$GEN_CNT
