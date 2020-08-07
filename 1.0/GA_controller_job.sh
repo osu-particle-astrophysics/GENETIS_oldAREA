@@ -25,7 +25,7 @@
 
 #**
 # make a variable called RunName
-RunName='Runs/Machtay_20200729_run'
+RunName='Runs/87349Bensipe01'
 
 #Path Variables
 GAPATH='/users/PAS0654/bensipe01/GA1/1.0/GA'
@@ -133,7 +133,8 @@ do
     #**
     GREPOUT="$(grep "Veff(ice)" $GAPATH/$RunName/gen_$GEN_CNT/temp_${ind}.txt)"
     #**
-    sed -i "160149s/.*/$GREPOUT/" $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt
+    #sed -i "160149s/.*/$GREPOUT/" $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt
+    sed -i "s/test Veff : 0/$GREPOUT/" $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt
     #change permissions
     #chown $USER gen* temp* child*
     
@@ -218,8 +219,10 @@ do
     #**
     GREPOUT="$(grep "Veff(ice)" $GAPATH/$RunName/gen_$GEN_CNT/temp_${ind}.txt)"
     #**
-    sed -i "160149s/.*/$GREPOUT/" $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt
-        #igrep "Veff" $GAPATH/gen_$GEN_CNT/child_$ind.txt | xargs -I OutPutFromGrep sed -e "s/^.*OutPutFromGrep.*$/$(cat temp_$ind.txt)/" $GAPATH/gen_$GEN_CNT/child_$ind.txt | tee $GAPATH/gen_$GEN_CNT/childUpdated.txt &> out.log
+    #sed -i "160149s/.*/$GREPOUT/" $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt
+    sed -i "s/test Veff : 0/$GREPOUT/" $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt
+ 
+   #igrep "Veff" $GAPATH/gen_$GEN_CNT/child_$ind.txt | xargs -I OutPutFromGrep sed -e "s/^.*OutPutFromGrep.*$/$(cat temp_$ind.txt)/" $GAPATH/gen_$GEN_CNT/child_$ind.txt | tee $GAPATH/gen_$GEN_CNT/childUpdated.txt &> out.log
 
         #mv $GAPATH/gen_$GEN_CNT/childUpdated.txt $GAPATH/gen_$GEN_CNT/child_$ind.txt
     done
@@ -238,25 +241,33 @@ cd $GAPATH/$RunName
 
 #**
 #Move up to GAPATH
-cd ..
+cd $GAPATH
 
 #**
 mv gen* ./$RunName
 #**
 #This loop adds the last generation's fitness scores to the end of the fitness file
+#for ind in $(seq 0 $TOT)
+#do
+#	if [ $ind == 0]
+#	then
+#		sed -n 160149p $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt | awk '{print substr($0,18,7)}' >> $GAPATH/fitnessFile.txt
+#	else
+#		VEFFVAL="$(sed -n 160149p $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt | awk '{print substr($0,18,7)}')"
+#		sed $s/$/,$VEFFVAL/ $GAPATH/fitnessFile.txt
+#
+#	fi
+#done
+FINAL_GEN=$(($E - 1))
+echo "The last generation is $FINAL_GEN"
+declare -a fitnessArray
 for ind in $(seq 0 $TOT)
 do
-	if [ $ind == 0]
-	then
-		sed -n 160149p $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt | awk '{print substr($0,18,7)}' >> $GAPATH/$RunName/fitnessFile.txt
-	elif [ $ind == $TOT ]
-	then
-		sed -n 160149p $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt | awk '{print substr($0,18,7)}' > $GAPATH/$RunName/fitnessFile.txt
-	else
-		VEFFVAL="$(sed -n 160149p $GAPATH/$RunName/gen_$GEN_CNT/child_${ind}.txt | awk '{print substr($0,18,7)}')"
-		echo "$VEFFVAL," > $GAPATH/$RunName/fitnessFile.txt
-	fi
+	VEFFVAL="$(sed -n 160149p $GAPATH/$RunName/gen_$FINAL_GEN/child_${ind}.txt | awk '{print $4}')"
+	fitnessArray[ind]=$VEFFVAL
 done
+printf -v joined '%s,' "${fitnessArray[@]}"
+echo "${joined%,}" >> fitnessFile.txt
 
 
 mv fitnessFile.txt ./$RunName
@@ -272,4 +283,4 @@ cd $ARAPATH
 #**
 printf "Roul. Xover : $A\nRoul. Mut :$B\nTour. Xover : $C\n Tour. Mut : $D\n Gen Cnt : $E\n " > ./$RunName/log.txt
 
-echo "Done"
+echo "Done"_controller_job.sh.e1783513
