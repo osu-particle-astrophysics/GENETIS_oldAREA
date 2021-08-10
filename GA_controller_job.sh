@@ -30,6 +30,7 @@
 ## new way:
 ## sbatch --export=ALL,A=1,B=1,C=1,D=1,E=1,F=10 GA_controller_job.sh
 
+# :)
 
 #permissions variable
 #USER=$whoami
