@@ -1,0 +1,6 @@
+Roul. Xover : 1
+Roul. Mut :1
+Tour. Xover : 1
+ Tour. Mut : 1
+ Gen Cnt : 2
+ 
