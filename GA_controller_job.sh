@@ -30,15 +30,13 @@
 ## new way:
 ## sbatch --export=ALL,A=1,B=1,C=1,D=1,E=1,F=10 GA_controller_job.sh
 
-# :)
-
 #permissions variable
 #USER=$whoami
 USER=$fahimi5
 
 #**
 # make a variable called RunName
-RunName='Runs/20210810fahimi5run3'
+RunName='Runs/20220419fahimi5run1'
 
 #Path Variables
 GAPATH='/users/PAS0654/fahimi5/AREA/GA'
@@ -55,6 +53,11 @@ NUM_JOBS=$((CHILD_NO*SEEDS))
 #Remove the interrupted gen so we can start it over														# start the generation number from 0
 rm -r $GAPATH/$RunName/gen_$GEN_CNT/*
 rm -r $GAPATH/$RunName/Flag_Files/*
+
+#recompile GA
+cd $GAPATH
+g++ -std=c++11 ara_GA.cc -o ara_GA
+cd $MAINPATH
 
 export TOT=$TOT											# exporting this makes it a variable any bash script can see
 export GEN_CNT=$GEN_CNT
@@ -95,13 +98,17 @@ do
 		# $3 = Tournament cross-over
 		# $4 = Tournament mutation
 		# The GA only runs one generation and the makes children but to run the next generation the loop below is needed, the far right number which is 0 in this case is the current generation and the last input when running this script is just how many times the GA program is run
-		./GA -gp $A $B $C $D -p 0						# -p represents the number of input parents (0 in gen 0)
-		#./GAtest.exe -gp $A $B $C $D -p 0																		# -gp represents the number of children for each algorithm
+		#./GA -gp $A $B $C $D -p 0						# -p represents the number of input parents (0 in gen 0)
+		./ara_GA -gp $A $B $C $D -p 0																		# -gp represents the number of children for each algorithm
 																					# hence, we have four numbers following -gp
 		
 		#**
 		# Move all the children to current generation folder
 		mv child_* $GAPATH/$RunName/gen_$GEN_CNT
+		
+		#Here we want to replace the different frequencies found in the child_{ind}.txt file with the ~300 MHz freq
+		
+		#python $MAINPATH/freqReplacement.py -i $GEN_CNT $CHILD_NO $GAPATH/$RunName
 		
 		#**
 		# Move back to RunName Directory
@@ -122,7 +129,7 @@ do
 		#make -f GA_make.mk temp
 		
 		#Loop for submitting multiple AraSim jobs to the osc
-		
+	        echo Before Arasim!	
 		mkdir -m775 Flag_Files
 		flag_files=0
 		
@@ -190,8 +197,8 @@ do
 		    
 		    #**
 		    # Run the GA with all chromosomes from last generation as potential parents
-		    ./GA -gp $A $B $C $D -p $CHILD_NO ./$RunName/gen_$LAST_CNT/child*
-		    #./GAtest.exe -gp $A $B $C $D -p $CHILD_NO ./$RunName/gen_$LAST_CNT/child* 
+		    #./GA -gp $A $B $C $D -p $CHILD_NO ./$RunName/gen_$LAST_CNT/child*
+		    ./ara_GA -gp $A $B $C $D -p $CHILD_NO ./$RunName/gen_$LAST_CNT/child* 
 		
 		    #chown $USER $GAPATH/$RunName/gen_$GEN_CNT $GAPATH/$RunName/gen_$GEN_CNT/temp* $GAPATH/$RunName/gen_$GEN_CNT/child*
 		    
@@ -302,12 +309,12 @@ done
 #chown $USER fitnessFile.txt
 #mv fitnessFile.txt ./$RunName
 cd $GAPATH
-#**
-python plot_maxes_fixed.py ./$RunName/fitnessFile.txt
-python plot_all.py ./$RunName/fitnessFile.txt
+#often the runs are too long to finish, manually run this at the end of the run
+#python plot_maxes_fixed.py ./$RunName/fitnessFile.txt
+#python plot_all.py ./$RunName/fitnessFile.txt
 
 #**
-mv *Veff.png ./$RunName
+#mv *Veff.png ./$RunName
 
 #**
 printf "Roul. Xover : $A\nRoul. Mut :$B\nTour. Xover : $C\n Tour. Mut : $D\n Gen Cnt : $E\n " > $RunName/log.txt

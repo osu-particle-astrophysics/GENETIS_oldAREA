@@ -43,6 +43,12 @@ for ind in range(0, individuals):
 	mean_Veff = np.mean(Veff_array)
 	mean_Veff_array.append(str(mean_Veff))
 
+# I unindented the next 3 lines out of the for loop to fix how it displays the fitness scores
+
+f2 = open(source + "/" + "gen_{}".format(gen) + "/fitnessFile_gen_{}".format(gen) + ".txt", 'a')
+f2.write(','.join(mean_Veff_array) + "\n")
+f2.close()
+
 print(mean_Veff_array)
 #Check for the Dummy Veff line
 numlines=0

@@ -355,8 +355,8 @@ int main(int argc, char const *argv[])
    		
         for(int ind = 0; ind < outputGen.genSize; ind++)
         {
-        // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-        Chromosome chromo(120, 14);
+        
+        Chromosome chromo(120, 13);
         chromo.randomGenotype(-5, 5);
         constraints(chromo);
         outputGen.children[ind] = chromo;
@@ -372,8 +372,8 @@ int main(int argc, char const *argv[])
         
         // Roulette Crossover Selection
         for(int ind = 0; ind < roul_xover; ind++){
-            // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-            Chromosome chromo(120, 14);
+            
+            Chromosome chromo(120, 13);
             roullette(inputGen, chromo, false);
             constraints(chromo);
             outputGen.children[ind] = chromo;
@@ -382,8 +382,8 @@ int main(int argc, char const *argv[])
 
         // Roulette Mutation Selection
         for(int ind = roul_xover; ind < (roul_mut+roul_xover); ind++){
-            // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-            Chromosome chromo(120, 14);
+            
+            Chromosome chromo(120, 13);
             roullette(inputGen, chromo, true);
             constraints(chromo);
             outputGen.children[ind] = chromo;
@@ -392,8 +392,8 @@ int main(int argc, char const *argv[])
 
         // Tournament Crossover Selection
         for(int ind = (roul_mut+roul_xover); ind < (roul_mut+roul_xover+tour_xover); ind++){
-            // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-            Chromosome chromo(120, 14);
+            
+            Chromosome chromo(120, 13);
             tournament(inputGen, chromo, false);
             constraints(chromo);
             outputGen.children[ind] = chromo;
@@ -402,8 +402,8 @@ int main(int argc, char const *argv[])
 
         // Tournament Mutation Selection
         for(int ind = (roul_mut+roul_xover+tour_xover); ind < (roul_mut+roul_xover+tour_xover+tour_mut); ind++){
-            // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-            Chromosome chromo(120, 14);
+            
+            Chromosome chromo(120, 13);
             tournament(inputGen, chromo, true);
             constraints(chromo);
             outputGen.children[ind] = chromo;
@@ -431,10 +431,10 @@ float evalGain(vector<float> &gainVector)
         theta[th] = (double) th*5.0f;
     }
 
-
-    for(int th = 0; th < 37; th++)
+    int th = 0;
+    for(int th2 = 0; th2 < 37; th2++)
     {
-    	gain[th] = gainVector[0]*(1/2.0)*(1/sqrt(PI)) +
+    	gain[th2] = gainVector[0]*(1/2.0)*(1/sqrt(PI)) +
                    gainVector[1]*(1/2.0)*sqrt(3/PI)*cos(theta[th]*PI/180.0f) +
                    gainVector[2]*(1/4.0)*sqrt(5/PI)*(3*pow(cos(theta[th]*PI/180.0f), 2)- 1) +
                    gainVector[3]*(1/4.0)*sqrt(7/PI)*(5*pow(cos(theta[th]*PI/180.0f),3)- 3*cos(theta[th]*PI/180.0f)) +
@@ -541,7 +541,6 @@ int parseArgs(int argc, char const *argv[], Generation &inputGen, int &roul_x_no
 
 
                         // Read coefficients and Veff of each parent
-                        // ETHAN LOOK HERE -- MACHTAY
                         for (int chromo = 0; chromo < numParents; chromo++)
                         {   
                             cout << "Reading parent " << chromo+1 << "/" << numParents << endl;
@@ -623,8 +622,7 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
     */
 
     // NEC+ file parameters
-    // make the 13-> 14 to add linear variable FAHIMI
-    const int NUM_COlUMNS = 14;
+    const int NUM_COlUMNS = 13;
     const int NUM_ROWS = 60;
     int START_LINE = 160021;
 
@@ -714,7 +712,7 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
 }
 
 
-// ETHAN LOOK HERE -- MACHTAY
+
 int readVeff(string filePath, Chromosome &parent)
 {   
 
@@ -827,11 +825,10 @@ int writeCoeff(ofstream &outFile, DataType dataType, Chromosome &outputChromo)
     // Begin writing coefficients, comma and line delimitted
     for (int i = 0; i < 60; i++)
     {
-	// Make this 13->14 for linear coefficient FAHIMI
-        for (int j = 0; j < 14; j++)
+        for (int j = 0; j < 13; j++)
         {
-	// Make this 12->13 for linear coefficient FAHIMI
-            if(j == 13){
+
+            if(j == 12){
                 output << outputChromo.genotype[i][j] << "\n";
             }else{
                 output << outputChromo.genotype[i][j] << ",";
@@ -955,21 +952,20 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
                 // Populate the gain and phase vectors for a polynomial fit
                 if(dataType == DataType::poly) {
 
-		// Multiply these numbers by (1+c1*(f-f_0)/f_0)
-		// c1 should be outputChromo.genotype[0][13] FAHIMI
-                    gain[f][p][th] = (1+(outputChromo.genotype[0][13]*(16.67*f)/83.33))*(outputChromo.genotype[0][0]*pow(theta[th]*PI/180.0, 0) + 
-                                     outputChromo.genotype[0][1]*pow(theta[th]*PI/180.0, 1) + 
-                                     outputChromo.genotype[0][2]*pow(theta[th]*PI/180.0, 2) + 
-                                     outputChromo.genotype[0][3]*pow(theta[th]*PI/180.0, 3) + 
-                                     outputChromo.genotype[0][4]*pow(theta[th]*PI/180.0, 4) + 
-                                     outputChromo.genotype[0][5]*pow(theta[th]*PI/180.0, 5) + 
-                                     outputChromo.genotype[0][6]*pow(theta[th]*PI/180.0, 6) + 
-                                     outputChromo.genotype[0][7]*pow(theta[th]*PI/180.0, 7) + 
-                                     outputChromo.genotype[0][8]*pow(theta[th]*PI/180.0, 8) + 
-                                     outputChromo.genotype[0][9]*pow(theta[th]*PI/180.0, 9) + 
-                                     outputChromo.genotype[0][10]*pow(theta[th]*PI/180.0, 10) +  
-                                     outputChromo.genotype[0][11]*pow(theta[th]*PI/180.0, 11) + 
-                                     outputChromo.genotype[0][12]*pow(theta[th]*PI/180.0, 12));
+
+                    gain[f][p][th] = outputChromo.genotype[f][0]*pow(theta[th]*PI/180.0, 0) + 
+                                     outputChromo.genotype[f][1]*pow(theta[th]*PI/180.0, 1) + 
+                                     outputChromo.genotype[f][2]*pow(theta[th]*PI/180.0, 2) + 
+                                     outputChromo.genotype[f][3]*pow(theta[th]*PI/180.0, 3) + 
+                                     outputChromo.genotype[f][4]*pow(theta[th]*PI/180.0, 4) + 
+                                     outputChromo.genotype[f][5]*pow(theta[th]*PI/180.0, 5) + 
+                                     outputChromo.genotype[f][6]*pow(theta[th]*PI/180.0, 6) + 
+                                     outputChromo.genotype[f][7]*pow(theta[th]*PI/180.0, 7) + 
+                                     outputChromo.genotype[f][8]*pow(theta[th]*PI/180.0, 8) + 
+                                     outputChromo.genotype[f][9]*pow(theta[th]*PI/180.0, 9) + 
+                                     outputChromo.genotype[f][10]*pow(theta[th]*PI/180.0, 10) +  
+                                     outputChromo.genotype[f][11]*pow(theta[th]*PI/180.0, 11) + 
+                                     outputChromo.genotype[f][12]*pow(theta[th]*PI/180.0, 12);
 
                     if (gain[f][p][th] > 0) {
                         
@@ -983,19 +979,19 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
                     }
                      
 
-                    phase[f][p][th] =(1+(outputChromo.genotype[0][13]*(16.67*f)/83.33))*(fmod((outputChromo.genotype[60][0]*pow(theta[th]*PI/180.0f, 0) + 
-                                  outputChromo.genotype[60][1]*pow(theta[th]*PI/180.0f, 1) + 
-                                  outputChromo.genotype[60][2]*pow(theta[th]*PI/180.0f, 2) + 
-                                  outputChromo.genotype[60][3]*pow(theta[th]*PI/180.0f, 3) + 
-                                  outputChromo.genotype[60][4]*pow(theta[th]*PI/180.0f, 4) + 
-                                  outputChromo.genotype[60][5]*pow(theta[th]*PI/180.0f, 5) + 
-                                  outputChromo.genotype[60][6]*pow(theta[th]*PI/180.0f, 6) + 
-                                  outputChromo.genotype[60][7]*pow(theta[th]*PI/180.0f, 7) + 
-                                  outputChromo.genotype[60][8]*pow(theta[th]*PI/180.0f, 8) + 
-                                  outputChromo.genotype[60][9]*pow(theta[th]*PI/180.0f, 9) + 
-                                  outputChromo.genotype[60][10]*pow(theta[th]*PI/180.0f, 10) + 
-                                  outputChromo.genotype[60][11]*pow(theta[th]*PI/180.0f, 11) + 
-                                  outputChromo.genotype[60][12]*pow(theta[th]*PI/180.0f, 12))*180/PI, 180));
+                    phase[f][p][th] = fmod((outputChromo.genotype[f+60][0]*pow(theta[th]*PI/180.0f, 0) + 
+                                  outputChromo.genotype[f+60][1]*pow(theta[th]*PI/180.0f, 1) + 
+                                  outputChromo.genotype[f+60][2]*pow(theta[th]*PI/180.0f, 2) + 
+                                  outputChromo.genotype[f+60][3]*pow(theta[th]*PI/180.0f, 3) + 
+                                  outputChromo.genotype[f+60][4]*pow(theta[th]*PI/180.0f, 4) + 
+                                  outputChromo.genotype[f+60][5]*pow(theta[th]*PI/180.0f, 5) + 
+                                  outputChromo.genotype[f+60][6]*pow(theta[th]*PI/180.0f, 6) + 
+                                  outputChromo.genotype[f+60][7]*pow(theta[th]*PI/180.0f, 7) + 
+                                  outputChromo.genotype[f+60][8]*pow(theta[th]*PI/180.0f, 8) + 
+                                  outputChromo.genotype[f+60][9]*pow(theta[th]*PI/180.0f, 9) + 
+                                  outputChromo.genotype[f+60][10]*pow(theta[th]*PI/180.0f, 10) + 
+                                  outputChromo.genotype[f+60][11]*pow(theta[th]*PI/180.0f, 11) + 
+                                  outputChromo.genotype[f+60][12]*pow(theta[th]*PI/180.0f, 12))*180/PI, 180);
 
                     output  << theta[th] << " \t " << phi[p] << " \t " << gainDB[f][p][th] << "     \t   " << gain[f][p][th] << "     \t    " << phase[f][p][th] << endl; 
 
@@ -1003,20 +999,20 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
 
                 // Populate the gain and phase vectors for a spherical harmonic fit
                 else if(dataType == DataType::sphHarm) {
-		// Multiply these numbers by (1+c1*(f-f_0)/f_0) FAHIMI
-                    gain[f][p][th] = (1+(outputChromo.genotype[0][13]*(16.67*f)/83.33))*(outputChromo.genotype[0][0]*(1/2.0)*(1/sqrt(PI)) +
-                                     outputChromo.genotype[0][1]*(1/2.0)*sqrt(3/PI)*cos(theta[th]*PI/180.0f) +
-                                     outputChromo.genotype[0][2]*(1/4.0)*sqrt(5/PI)*(3*pow(cos(theta[th]*PI/180.0f), 2)- 1) +
-                                     outputChromo.genotype[0][3]*(1/4.0)*sqrt(7/PI)*(5*pow(cos(theta[th]*PI/180.0f),3)- 3*cos(theta[th]*PI/180.0f)) +
-                                     outputChromo.genotype[0][4]*(3/16.0)*sqrt(1/PI)*(35*pow(cos(theta[th]*PI/180.0f),4) - 30*pow(cos(theta[th]*PI/180.0f),2)+3) +
-                                     outputChromo.genotype[0][5]*(1/16.0)*sqrt(11/PI)*(15*cos(theta[th]*PI/180.0f) - 70*pow(cos(theta[th]*PI/180.0f),3)+63*pow(cos(theta[th]*PI/180.0f),5)) +
-                                     outputChromo.genotype[0][6]*(1/32.0)*sqrt(13/PI)*(-5 + 105*pow(cos(theta[th]*PI/180.0f),2)-315*pow(cos(theta[th]*PI/180.0f),4) + 231*pow(cos(theta[th]*PI/180.0f),6)) +
-                                     outputChromo.genotype[0][7]*(1/32.0)*sqrt(15/PI)*(-35*cos(theta[th]*PI/180.0f)+ 315*pow(cos(theta[th]*PI/180.0f),3) -693*pow(cos(theta[th]*PI/180.0f),5) + 429*pow(cos(theta[th]*PI/180.0f),7)) +
-                                     outputChromo.genotype[0][8]*(1/256.0)*sqrt(17/PI)*(35 - 1260*pow(cos(theta[th]*PI/180.0f),2) + 6930*pow(cos(theta[th]*PI/180.0f),4) - 12012*pow(cos(theta[th]*PI/180.0f),6) + 6435*pow((cos(theta[th]*PI/180.0f)),8)) +
-                                     outputChromo.genotype[0][9]*(1/256.0)*sqrt(19/PI)*(315*cos(theta[th]*PI/180.0f)- 4620*pow(cos(theta[th]*PI/180.0f),3) + 18018*pow(cos(theta[th]*PI/180.0f),5) - 25740*pow(cos(theta[th]*PI/180.0f),7) + 12155*pow((cos(theta[th]*PI/180.0f)),9)) +
-                                     outputChromo.genotype[0][10]*(1/512.0)*sqrt(21/PI)*(-63 +3465*pow(cos(theta[th]*PI/180.0f),2) - 30030*pow(cos(theta[th]*PI/180.0f),4) + 90090*pow(cos(theta[th]*PI/180.0f),6) -109395*pow((cos(theta[th]*PI/180.0f)),8)+46189*pow(cos(theta[th]*PI/180.0f),10)) +  
-                                     outputChromo.genotype[0][11]*(1/512.0)*sqrt(23/PI)*(-693*pow(cos(theta[th]*PI/180.0f),1) +15015*pow(cos(theta[th]*PI/180.0f),3) - 90090*pow(cos(theta[th]*PI/180.0f),5) +218790*pow((cos(theta[th]*PI/180.0f)),7)-230945*pow(cos(theta[th]*PI/180.0f),9)+88179*pow(cos(theta[th]*PI/180.0f),11)) +
-                                     outputChromo.genotype[0][12]*(1/2048.0)*sqrt(25/PI)*(231 -18018*pow(cos(theta[th]*PI/180.0f),2) +225225*pow(cos(theta[th]*PI/180.0f),4) - 1021020*pow(cos(theta[th]*PI/180.0f),6) +2078505*pow((cos(theta[th]*PI/180.0f)),8)-1939938*pow(cos(theta[th]*PI/180.0f),10)+676039*pow(cos(theta[th]*PI/180.0f),12)));
+
+                    gain[f][p][th] = outputChromo.genotype[f][0]*(1/2.0)*(1/sqrt(PI)) +
+                                     outputChromo.genotype[f][1]*(1/2.0)*sqrt(3/PI)*cos(theta[th]*PI/180.0f) +
+                                     outputChromo.genotype[f][2]*(1/4.0)*sqrt(5/PI)*(3*pow(cos(theta[th]*PI/180.0f), 2)- 1) +
+                                     outputChromo.genotype[f][3]*(1/4.0)*sqrt(7/PI)*(5*pow(cos(theta[th]*PI/180.0f),3)- 3*cos(theta[th]*PI/180.0f)) +
+                                     outputChromo.genotype[f][4]*(3/16.0)*sqrt(1/PI)*(35*pow(cos(theta[th]*PI/180.0f),4) - 30*pow(cos(theta[th]*PI/180.0f),2)+3) +
+                                     outputChromo.genotype[f][5]*(1/16.0)*sqrt(11/PI)*(15*cos(theta[th]*PI/180.0f) - 70*pow(cos(theta[th]*PI/180.0f),3)+63*pow(cos(theta[th]*PI/180.0f),5)) +
+                                     outputChromo.genotype[f][6]*(1/32.0)*sqrt(13/PI)*(-5 + 105*pow(cos(theta[th]*PI/180.0f),2)-315*pow(cos(theta[th]*PI/180.0f),4) + 231*pow(cos(theta[th]*PI/180.0f),6)) +
+                                     outputChromo.genotype[f][7]*(1/32.0)*sqrt(15/PI)*(-35*cos(theta[th]*PI/180.0f)+ 315*pow(cos(theta[th]*PI/180.0f),3) -693*pow(cos(theta[th]*PI/180.0f),5) + 429*pow(cos(theta[th]*PI/180.0f),7)) +
+                                     outputChromo.genotype[f][8]*(1/256.0)*sqrt(17/PI)*(35 - 1260*pow(cos(theta[th]*PI/180.0f),2) + 6930*pow(cos(theta[th]*PI/180.0f),4) - 12012*pow(cos(theta[th]*PI/180.0f),6) + 6435*pow((cos(theta[th]*PI/180.0f)),8)) +
+                                     outputChromo.genotype[f][9]*(1/256.0)*sqrt(19/PI)*(315*cos(theta[th]*PI/180.0f)- 4620*pow(cos(theta[th]*PI/180.0f),3) + 18018*pow(cos(theta[th]*PI/180.0f),5) - 25740*pow(cos(theta[th]*PI/180.0f),7) + 12155*pow((cos(theta[th]*PI/180.0f)),9)) +
+                                     outputChromo.genotype[f][10]*(1/512.0)*sqrt(21/PI)*(-63 +3465*pow(cos(theta[th]*PI/180.0f),2) - 30030*pow(cos(theta[th]*PI/180.0f),4) + 90090*pow(cos(theta[th]*PI/180.0f),6) -109395*pow((cos(theta[th]*PI/180.0f)),8)+46189*pow(cos(theta[th]*PI/180.0f),10)) +  
+                                     outputChromo.genotype[f][11]*(1/512.0)*sqrt(23/PI)*(-693*pow(cos(theta[th]*PI/180.0f),1) +15015*pow(cos(theta[th]*PI/180.0f),3) - 90090*pow(cos(theta[th]*PI/180.0f),5) +218790*pow((cos(theta[th]*PI/180.0f)),7)-230945*pow(cos(theta[th]*PI/180.0f),9)+88179*pow(cos(theta[th]*PI/180.0f),11)) +
+                                     outputChromo.genotype[f][12]*(1/2048.0)*sqrt(25/PI)*(231 -18018*pow(cos(theta[th]*PI/180.0f),2) +225225*pow(cos(theta[th]*PI/180.0f),4) - 1021020*pow(cos(theta[th]*PI/180.0f),6) +2078505*pow((cos(theta[th]*PI/180.0f)),8)-1939938*pow(cos(theta[th]*PI/180.0f),10)+676039*pow(cos(theta[th]*PI/180.0f),12));
 
                     if (gain[f][p][th] > 0) {
                         
@@ -1029,19 +1025,19 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
                     }
 
 
-                    phase[f][p][th] = (1+(outputChromo.genotype[0][13]*(16.67*f)/83.33))*(fmod(outputChromo.genotype[60][0]*(1/2.0)*(1/sqrt(PI)) +
-                                     outputChromo.genotype[60][1]*(1/2.0)*sqrt(3/PI)*cos(theta[th]*PI/180.0f) +
-                                     outputChromo.genotype[60][2]*(1/4.0)*sqrt(5/PI)*(3*pow(cos(theta[th]*PI/180.0f), 2) - 1) +
-                                     outputChromo.genotype[60][3]*(1/4.0)*sqrt(7/PI)*(5*pow(cos(theta[th]*PI/180.0f),3)- 3*cos(theta[th]*PI/180.0f)) +
-                                     outputChromo.genotype[60][4]*(3/16.0)*sqrt(1/PI)*(35*pow(cos(theta[th]*PI/180.0f),4) - 30*pow(cos(theta[th]*PI/180.0f),2)+3) +
-                                     outputChromo.genotype[60][5]*(1/16.0)*sqrt(11/PI)*(15*cos(theta[th]*PI/180.0f) - 70*pow(cos(theta[th]*PI/180.0f),3)+63*pow(cos(theta[th]*PI/180.0f),5)) +
-                                     outputChromo.genotype[60][6]*(1/32.0)*sqrt(13/PI)*(-5 + 105*pow(cos(theta[th]*PI/180.0f),2)-315*pow(cos(theta[th]*PI/180.0f),4) + 231*pow(cos(theta[th]*PI/180.0f),6)) +
-                                     outputChromo.genotype[60][7]*(1/32.0)*sqrt(15/PI)*(-35*cos(theta[th]*PI/180.0f)+ 315*pow(cos(theta[th]*PI/180.0f),3) -693*pow(cos(theta[th]*PI/180.0f),5) + 429*pow(cos(theta[th]*PI/180.0f),7)) +
-                                     outputChromo.genotype[60][8]*(1/256.0)*sqrt(17/PI)*(35 - 1260*pow(cos(theta[th]*PI/180.0f),2) + 6930*pow(cos(theta[th]*PI/180.0f),4) - 12012*pow(cos(theta[th]*PI/180.0f),6) + 6435*pow((cos(theta[th]*PI/180.0f)),8)) +
-                                     outputChromo.genotype[60][9]*(1/256.0)*sqrt(19/PI)*(315*cos(theta[th]*PI/180.0f)- 4620*pow(cos(theta[th]*PI/180.0f),3) + 18018*pow(cos(theta[th]*PI/180.0f),5) - 25740*pow(cos(theta[th]*PI/180.0f),7) + 12155*pow((cos(theta[th]*PI/180.0f)),9)) +
-                                     outputChromo.genotype[60][10]*(1/512.0)*sqrt(21/PI)*(-63 +3465*pow(cos(theta[th]*PI/180.0f),2) - 30030*pow(cos(theta[th]*PI/180.0f),4) + 90090*pow(cos(theta[th]*PI/180.0f),6) -109395*pow((cos(theta[th]*PI/180.0f)),8)+46189*pow(cos(theta[th]*PI/180.0f),10)) +  
-                                     outputChromo.genotype[60][11]*(1/512.0)*sqrt(23/PI)*(-693*pow(cos(theta[th]*PI/180.0f),1) +15015*pow(cos(theta[th]*PI/180.0f),3) - 90090*pow(cos(theta[th]*PI/180.0f),5) +218790*pow((cos(theta[th]*PI/180.0f)),7)-230945*pow(cos(theta[th]*PI/180.0f),9)+88179*pow(cos(theta[th]*PI/180.0f),11)) +
-                                     outputChromo.genotype[60][12]*(1/2048.0)*sqrt(25/PI)*(231 -18018*pow(cos(theta[th]*PI/180.0f),2) +225225*pow(cos(theta[th]*PI/180.0f),4) - 1021020*pow(cos(theta[th]*PI/180.0f),6) +2078505*pow((cos(theta[th]*PI/180.0f)),8)-1939938*pow(cos(theta[th]*PI/180.0f),10)+676039*pow(cos(theta[th]*PI/180.0f),12))*180/PI,180));
+                    phase[f][p][th] = fmod(outputChromo.genotype[f+60][0]*(1/2.0)*(1/sqrt(PI)) +
+                                     outputChromo.genotype[f+60][1]*(1/2.0)*sqrt(3/PI)*cos(theta[th]*PI/180.0f) +
+                                     outputChromo.genotype[f+60][2]*(1/4.0)*sqrt(5/PI)*(3*pow(cos(theta[th]*PI/180.0f), 2) - 1) +
+                                     outputChromo.genotype[f+60][3]*(1/4.0)*sqrt(7/PI)*(5*pow(cos(theta[th]*PI/180.0f),3)- 3*cos(theta[th]*PI/180.0f)) +
+                                     outputChromo.genotype[f+60][4]*(3/16.0)*sqrt(1/PI)*(35*pow(cos(theta[th]*PI/180.0f),4) - 30*pow(cos(theta[th]*PI/180.0f),2)+3) +
+                                     outputChromo.genotype[f+60][5]*(1/16.0)*sqrt(11/PI)*(15*cos(theta[th]*PI/180.0f) - 70*pow(cos(theta[th]*PI/180.0f),3)+63*pow(cos(theta[th]*PI/180.0f),5)) +
+                                     outputChromo.genotype[f+60][6]*(1/32.0)*sqrt(13/PI)*(-5 + 105*pow(cos(theta[th]*PI/180.0f),2)-315*pow(cos(theta[th]*PI/180.0f),4) + 231*pow(cos(theta[th]*PI/180.0f),6)) +
+                                     outputChromo.genotype[f+60][7]*(1/32.0)*sqrt(15/PI)*(-35*cos(theta[th]*PI/180.0f)+ 315*pow(cos(theta[th]*PI/180.0f),3) -693*pow(cos(theta[th]*PI/180.0f),5) + 429*pow(cos(theta[th]*PI/180.0f),7)) +
+                                     outputChromo.genotype[f+60][8]*(1/256.0)*sqrt(17/PI)*(35 - 1260*pow(cos(theta[th]*PI/180.0f),2) + 6930*pow(cos(theta[th]*PI/180.0f),4) - 12012*pow(cos(theta[th]*PI/180.0f),6) + 6435*pow((cos(theta[th]*PI/180.0f)),8)) +
+                                     outputChromo.genotype[f+60][9]*(1/256.0)*sqrt(19/PI)*(315*cos(theta[th]*PI/180.0f)- 4620*pow(cos(theta[th]*PI/180.0f),3) + 18018*pow(cos(theta[th]*PI/180.0f),5) - 25740*pow(cos(theta[th]*PI/180.0f),7) + 12155*pow((cos(theta[th]*PI/180.0f)),9)) +
+                                     outputChromo.genotype[f+60][10]*(1/512.0)*sqrt(21/PI)*(-63 +3465*pow(cos(theta[th]*PI/180.0f),2) - 30030*pow(cos(theta[th]*PI/180.0f),4) + 90090*pow(cos(theta[th]*PI/180.0f),6) -109395*pow((cos(theta[th]*PI/180.0f)),8)+46189*pow(cos(theta[th]*PI/180.0f),10)) +  
+                                     outputChromo.genotype[f+60][11]*(1/512.0)*sqrt(23/PI)*(-693*pow(cos(theta[th]*PI/180.0f),1) +15015*pow(cos(theta[th]*PI/180.0f),3) - 90090*pow(cos(theta[th]*PI/180.0f),5) +218790*pow((cos(theta[th]*PI/180.0f)),7)-230945*pow(cos(theta[th]*PI/180.0f),9)+88179*pow(cos(theta[th]*PI/180.0f),11)) +
+                                     outputChromo.genotype[f+60][12]*(1/2048.0)*sqrt(25/PI)*(231 -18018*pow(cos(theta[th]*PI/180.0f),2) +225225*pow(cos(theta[th]*PI/180.0f),4) - 1021020*pow(cos(theta[th]*PI/180.0f),6) +2078505*pow((cos(theta[th]*PI/180.0f)),8)-1939938*pow(cos(theta[th]*PI/180.0f),10)+676039*pow(cos(theta[th]*PI/180.0f),12))*180/PI,180);
 
                     output  << theta[th] << " \t " << phi[p] << " \t " << gainDB[f][p][th] << "     \t   " << gain[f][p][th] << "     \t    " << phase[f][p][th] << endl; 
 

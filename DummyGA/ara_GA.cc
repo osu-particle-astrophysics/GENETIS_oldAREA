@@ -269,6 +269,7 @@ public:
 
 int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVector ); 
 int readVeff(string filePath, Chromosome &parent);
+int readVeff(string filePath, Chromosome &parent, individual);
 int parseArgs(int argc, char const *argv[], Generation &inputGen, int &roul_x_no, int &roul_mut_no, int &tour_x_no, int &tour_mut_no);
 int writeCoeff(ofstream &outFile, DataType dataType, Chromosome &outputChromo);
 int writeInfo(ofstream &outFile, Chromosome &outputChromo, int runNum, int iterNum);
@@ -565,7 +566,10 @@ int parseArgs(int argc, char const *argv[], Generation &inputGen, int &roul_x_no
 
                             // Read Veff of parent 
                             cout << "Reading Veff..." << endl;
-                            readVeff(argv[argIndex + chromo + 2], inputGen.children[chromo]);
+			// AIDAN MACHTAY LOOK HERE
+                            //readVeff(argv[argIndex + chromo + 2], inputGen.children[chromo]);
+                            readVeff(fitnessfile, inputGen.children[chromo], chromo+1);
+
                             cout << "Finished parent \n" << endl;
                         }
                         cout << endl;
@@ -712,7 +716,37 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
     return 0;
 
 }
+// NEW VEFF
+int readVeff(string filePath, Chromosome &parent, individual)
+{
 
+	// Start reading from top
+	lineNum = 1;
+
+	// Open file
+	fstream parentFile;
+	parentFile.open(filePath); 
+
+	if ( parentFile.is_open() ){
+
+        	while(!(parentFile.eof())){
+
+            	string line;
+            	getline(parentFile, line);
+		string :: size_type sz;
+		parent.fitness = stof(line, &sz);
+		cout << "Fitness is " << parent.fitness << endl;
+	} else {
+
+        	cout << "Problem opening file at : " << filePath << endl;
+        	return 1;
+
+    	}
+
+    	return 0;
+	
+
+}
 
 // ETHAN LOOK HERE -- MACHTAY
 int readVeff(string filePath, Chromosome &parent)
@@ -729,6 +763,7 @@ int readVeff(string filePath, Chromosome &parent)
         Veff =  variable to save the Veff score to
 
     */
+
 
     // Line number for Veff in a NEC+ file
     const int VEFF_LINE = 160149;
