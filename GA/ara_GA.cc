@@ -546,8 +546,9 @@ int parseArgs(int argc, char const *argv[], Generation &inputGen, int &roul_x_no
                         {   
                             cout << "Reading parent " << chromo+1 << "/" << numParents << endl;
 
-                            vector<vector<double>> inputGain(60, vector<double>(13, 0));
-                            vector<vector<double>> inputPhase(60, vector<double>(13, 0));
+			    //BRYAN -- Change 13 -> 14
+                            vector<vector<double>> inputGain(60, vector<double>(14, 0));
+                            vector<vector<double>> inputPhase(60, vector<double>(14, 0));
                             vector<vector<double>> coeff;
                             coeff.reserve(inputGain.size() + inputPhase.size());
 
@@ -763,7 +764,11 @@ int readVeff(string filePath, Chromosome &parent)
 
                     // Veff score follows a ':'
                     if (count == 1) {
-                        parent.fitness = stof(element, &sz)/1.0e9;
+		        //BRYAN- remove unit conversion because fitness score
+		        //is already written to child/parent files in km^3/SR
+		        //This looks like it expects m^3/SR?
+                        //parent.fitness = stof(element, &sz)/1.0e9;
+		        parent.fitness = stof(element, &sz);
 			cout << "Fit is " << parent.fitness << endl;
                     }
                         
@@ -856,12 +861,13 @@ int writeCoeff(ofstream &outFile, DataType dataType, Chromosome &outputChromo)
     }
 
     // Begin writing coefficents, comma and line delimitted
+    // BRYAN -- Increase loop iterations by 1 for extra freq dependence param.
     for (int i = 60; i < 120; i++)
     {
-        for (int j = 0; j < 13; j++)
+        for (int j = 0; j < 14; j++)
         {
 
-            if(j == 12){
+            if(j == 13){
                 output << outputChromo.genotype[i][j] << "\n";
             }else{
                 output << outputChromo.genotype[i][j] << ",";
