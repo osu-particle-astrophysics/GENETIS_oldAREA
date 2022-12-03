@@ -356,7 +356,9 @@ int main(int argc, char const *argv[])
         for(int ind = 0; ind < outputGen.genSize; ind++)
         {
         // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-        Chromosome chromo(120, 14);
+        //BRYAN- change 120 -> 2 to account for only evolving one freq/phase
+	//Chromosome chromo(120, 14);
+	Chromosome chromo(2, 14);
         chromo.randomGenotype(-5, 5);
         constraints(chromo);
         outputGen.children[ind] = chromo;
@@ -373,7 +375,9 @@ int main(int argc, char const *argv[])
         // Roulette Crossover Selection
         for(int ind = 0; ind < roul_xover; ind++){
             // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-            Chromosome chromo(120, 14);
+	    //BRYAN- change 120 -> 2 to account for only evolving one freq/phase
+	    //Chromosome chromo(120, 14);
+	    Chromosome chromo(2, 14);
             roullette(inputGen, chromo, false);
             constraints(chromo);
             outputGen.children[ind] = chromo;
@@ -383,7 +387,9 @@ int main(int argc, char const *argv[])
         // Roulette Mutation Selection
         for(int ind = roul_xover; ind < (roul_mut+roul_xover); ind++){
             // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-            Chromosome chromo(120, 14);
+	    //BRYAN- change 120 -> 2 to account for only evolving one freq/phase
+	    //Chromosome chromo(120, 14);
+	    Chromosome chromo(2, 14);
             roullette(inputGen, chromo, true);
             constraints(chromo);
             outputGen.children[ind] = chromo;
@@ -393,7 +399,9 @@ int main(int argc, char const *argv[])
         // Tournament Crossover Selection
         for(int ind = (roul_mut+roul_xover); ind < (roul_mut+roul_xover+tour_xover); ind++){
             // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-            Chromosome chromo(120, 14);
+	    //BRYAN- change 120 -> 2 to account for only evolving one freq/phase
+	    //Chromosome chromo(120, 14);
+	    Chromosome chromo(2, 14);
             tournament(inputGen, chromo, false);
             constraints(chromo);
             outputGen.children[ind] = chromo;
@@ -403,7 +411,9 @@ int main(int argc, char const *argv[])
         // Tournament Mutation Selection
         for(int ind = (roul_mut+roul_xover+tour_xover); ind < (roul_mut+roul_xover+tour_xover+tour_mut); ind++){
             // Change 13 -> 14 to start creating linear dependence variable FAHIMI
-            Chromosome chromo(120, 14);
+	    //BRYAN- change 120 -> 2 to account for only evolving one freq/phase
+	    //Chromosome chromo(120, 14);
+	    Chromosome chromo(2, 14);
             tournament(inputGen, chromo, true);
             constraints(chromo);
             outputGen.children[ind] = chromo;
@@ -547,8 +557,11 @@ int parseArgs(int argc, char const *argv[], Generation &inputGen, int &roul_x_no
                             cout << "Reading parent " << chromo+1 << "/" << numParents << endl;
 
 			    //BRYAN -- Change 13 -> 14
-                            vector<vector<double>> inputGain(60, vector<double>(14, 0));
-                            vector<vector<double>> inputPhase(60, vector<double>(14, 0));
+			    //BRYAN -- Change 60 -> 1 b/c only evolving one freq
+                            //vector<vector<double>> inputGain(60, vector<double>(14, 0));
+                            //vector<vector<double>> inputPhase(60, vector<double>(14, 0));
+			    vector<vector<double>> inputGain(1, vector<double>(14, 0));
+                            vector<vector<double>> inputPhase(1, vector<double>(14, 0));
                             vector<vector<double>> coeff;
                             coeff.reserve(inputGain.size() + inputPhase.size());
 
@@ -583,7 +596,8 @@ int parseArgs(int argc, char const *argv[], Generation &inputGen, int &roul_x_no
                     
                     // Parse algorithm parameters from argv array
                     roul_x_no = atoi(argv[argIndex + 1]);
-                    roul_mut_no = atoi(argv[argIndex + +2]);
+                    //roul_mut_no = atoi(argv[argIndex + +2]); //BRYAN- Typo here?
+		    roul_mut_no = atoi(argv[argIndex + 2]);
                     tour_x_no = atoi(argv[argIndex + 3]);
                     tour_mut_no = atoi(argv[argIndex + 4]);
 
@@ -626,7 +640,9 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
     // NEC+ file parameters
     // make the 13-> 14 to add linear variable FAHIMI
     const int NUM_COlUMNS = 14;
-    const int NUM_ROWS = 60;
+    // BRYAN- change 60 -> 1 b/c only evolving single freq
+    //const int NUM_ROWS = 60;
+    const int NUM_ROWS = 1;
     int START_LINE = 160021;
 
     // Starting point for gain coefficents
@@ -637,7 +653,9 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
     // Starting point for phase coefficents
     } else if (dataType == phase){
         
-        START_LINE = 160085;
+        //BRYAN- Change 160085 -> 160026
+        //START_LINE = 160085;
+        START_LINE = 160026;
 
     // No data type given, return error
     }else{
@@ -667,7 +685,9 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
             getline(parentFile, line);
 
             // If lineNum is at START_LINE and less than 60 rows have been read, save input data
-            if( (lineNum >= START_LINE) && (rowCount < 60) ){
+	    //BRYAN- change 60->1 b/c only evolving 1 freq
+            //if( (lineNum >= START_LINE) && (rowCount < 60) ){
+	    if( (lineNum >= START_LINE) && (rowCount < 1) ){
 
                 if( (lineNum > (START_LINE + 1)) && (lineNum < (START_LINE + NUM_ROWS + 2)) ){
 
@@ -681,6 +701,8 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
                         string :: size_type sz;
 
                         // Store a data element in the dataVector
+			cout << "debug: this is the element:" << element << endl;
+			cout << "debug: this is the lineNum:" << lineNum << endl;
                         dataVector[rowCount][columnCount] = stof(element, &sz);
 
                         // Increment column index
@@ -732,7 +754,9 @@ int readVeff(string filePath, Chromosome &parent)
     */
 
     // Line number for Veff in a NEC+ file
-    const int VEFF_LINE = 160149;
+    //BRYAN- change 160149 -> 160031 b/c only one freq line
+    //const int VEFF_LINE = 160149;
+    const int VEFF_LINE = 160031;
 
     int lineNum;
     string line, word;
@@ -830,16 +854,22 @@ int writeCoeff(ofstream &outFile, DataType dataType, Chromosome &outputChromo)
     }
 
     // Begin writing coefficients, comma and line delimitted
-    for (int i = 0; i < 60; i++)
+    //Bryan- change 60->1 b/c only evolving one freq
+    //for (int i = 0; i < 60; i++)
+    for (int i = 0; i < 1; i++)
     {
 	// Make this 13->14 for linear coefficient FAHIMI
         for (int j = 0; j < 14; j++)
         {
 	// Make this 12->13 for linear coefficient FAHIMI
             if(j == 13){
-                output << outputChromo.genotype[i][j] << "\n";
+	      //BRYAN- only evolving first frequency
+	      //output << outputChromo.genotype[i][j] << "\n";
+	      output << outputChromo.genotype[i][j] << "\n";
             }else{
-                output << outputChromo.genotype[i][j] << ",";
+	      //BRYAN- only evolving first frequency
+	      //output << outputChromo.genotype[i][j] << ",";
+	      output << outputChromo.genotype[i][j] << ",";
             }
 
         }
@@ -862,15 +892,21 @@ int writeCoeff(ofstream &outFile, DataType dataType, Chromosome &outputChromo)
 
     // Begin writing coefficents, comma and line delimitted
     // BRYAN -- Increase loop iterations by 1 for extra freq dependence param.
-    for (int i = 60; i < 120; i++)
+    //Bryan- change 60(120)->1(2) b/c only evolving one phase
+    //for (int i = 60; i < 120; i++)
+    for (int i = 1; i < 2; i++)
     {
         for (int j = 0; j < 14; j++)
         {
 
             if(j == 13){
-                output << outputChromo.genotype[i][j] << "\n";
+	      //BRYAN- only evolving 60th freq for phase
+	      //output << outputChromo.genotype[i][j] << "\n";
+	      output << outputChromo.genotype[i][j] << "\n";
             }else{
-                output << outputChromo.genotype[i][j] << ",";
+	      //BRYAN- only evolving 60th freq for phase
+	      //output << outputChromo.genotype[i][j] << ",";
+	      output << outputChromo.genotype[i][j] << ",";
             }
 
         }
@@ -929,7 +965,9 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
     // Populate theta and phi arrays
     double theta[37];
     double phi[72];
+    //BRYAN- this freq should stay at 60 for single freq evolution b/c the gain patterns are still extrapolated to all 60 freqs
     int freq[60];
+    //int freq[1];
 
     for (int th = 0; th < 37; th++)
     {
@@ -988,7 +1026,8 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
 
                     }
                      
-
+		    //BRYAN- change 60->1 in genotypes b/c phase is now the 2nd entry in the array with only one freq being evolved
+		    /*
                     phase[f][p][th] =(1+(outputChromo.genotype[0][13]*(16.67*f)/83.33))*(fmod((outputChromo.genotype[60][0]*pow(theta[th]*PI/180.0f, 0) + 
                                   outputChromo.genotype[60][1]*pow(theta[th]*PI/180.0f, 1) + 
                                   outputChromo.genotype[60][2]*pow(theta[th]*PI/180.0f, 2) + 
@@ -1002,6 +1041,20 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
                                   outputChromo.genotype[60][10]*pow(theta[th]*PI/180.0f, 10) + 
                                   outputChromo.genotype[60][11]*pow(theta[th]*PI/180.0f, 11) + 
                                   outputChromo.genotype[60][12]*pow(theta[th]*PI/180.0f, 12))*180/PI, 180));
+		    */
+		    phase[f][p][th] =(1+(outputChromo.genotype[0][13]*(16.67*f)/83.33))*(fmod((outputChromo.genotype[1][0]*pow(theta[th]*PI/180.0f, 0) + 
+                                  outputChromo.genotype[1][1]*pow(theta[th]*PI/180.0f, 1) + 
+                                  outputChromo.genotype[1][2]*pow(theta[th]*PI/180.0f, 2) + 
+                                  outputChromo.genotype[1][3]*pow(theta[th]*PI/180.0f, 3) + 
+                                  outputChromo.genotype[1][4]*pow(theta[th]*PI/180.0f, 4) + 
+                                  outputChromo.genotype[1][5]*pow(theta[th]*PI/180.0f, 5) + 
+                                  outputChromo.genotype[1][6]*pow(theta[th]*PI/180.0f, 6) + 
+                                  outputChromo.genotype[1][7]*pow(theta[th]*PI/180.0f, 7) + 
+                                  outputChromo.genotype[1][8]*pow(theta[th]*PI/180.0f, 8) + 
+                                  outputChromo.genotype[1][9]*pow(theta[th]*PI/180.0f, 9) + 
+                                  outputChromo.genotype[1][10]*pow(theta[th]*PI/180.0f, 10) + 
+                                  outputChromo.genotype[1][11]*pow(theta[th]*PI/180.0f, 11) + 
+                                  outputChromo.genotype[1][12]*pow(theta[th]*PI/180.0f, 12))*180/PI, 180));
 
                     output  << theta[th] << " \t " << phi[p] << " \t " << gainDB[f][p][th] << "     \t   " << gain[f][p][th] << "     \t    " << phase[f][p][th] << endl; 
 
@@ -1034,7 +1087,9 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
                         
                     }
 
-
+		    
+		    //BRYAN- change 60->1 in genotypes b/c phase is now the 2nd entry in the array with only one freq being evolved
+		    /*
                     phase[f][p][th] = (1+(outputChromo.genotype[0][13]*(16.67*f)/83.33))*(fmod(outputChromo.genotype[60][0]*(1/2.0)*(1/sqrt(PI)) +
                                      outputChromo.genotype[60][1]*(1/2.0)*sqrt(3/PI)*cos(theta[th]*PI/180.0f) +
                                      outputChromo.genotype[60][2]*(1/4.0)*sqrt(5/PI)*(3*pow(cos(theta[th]*PI/180.0f), 2) - 1) +
@@ -1048,6 +1103,20 @@ int writeRadPattern(ofstream &outFile, DataType dataType, Chromosome &outputChro
                                      outputChromo.genotype[60][10]*(1/512.0)*sqrt(21/PI)*(-63 +3465*pow(cos(theta[th]*PI/180.0f),2) - 30030*pow(cos(theta[th]*PI/180.0f),4) + 90090*pow(cos(theta[th]*PI/180.0f),6) -109395*pow((cos(theta[th]*PI/180.0f)),8)+46189*pow(cos(theta[th]*PI/180.0f),10)) +  
                                      outputChromo.genotype[60][11]*(1/512.0)*sqrt(23/PI)*(-693*pow(cos(theta[th]*PI/180.0f),1) +15015*pow(cos(theta[th]*PI/180.0f),3) - 90090*pow(cos(theta[th]*PI/180.0f),5) +218790*pow((cos(theta[th]*PI/180.0f)),7)-230945*pow(cos(theta[th]*PI/180.0f),9)+88179*pow(cos(theta[th]*PI/180.0f),11)) +
                                      outputChromo.genotype[60][12]*(1/2048.0)*sqrt(25/PI)*(231 -18018*pow(cos(theta[th]*PI/180.0f),2) +225225*pow(cos(theta[th]*PI/180.0f),4) - 1021020*pow(cos(theta[th]*PI/180.0f),6) +2078505*pow((cos(theta[th]*PI/180.0f)),8)-1939938*pow(cos(theta[th]*PI/180.0f),10)+676039*pow(cos(theta[th]*PI/180.0f),12))*180/PI,180));
+		    */
+		    phase[f][p][th] = (1+(outputChromo.genotype[0][13]*(16.67*f)/83.33))*(fmod(outputChromo.genotype[1][0]*(1/2.0)*(1/sqrt(PI)) +
+                                     outputChromo.genotype[1][1]*(1/2.0)*sqrt(3/PI)*cos(theta[th]*PI/180.0f) +
+                                     outputChromo.genotype[1][2]*(1/4.0)*sqrt(5/PI)*(3*pow(cos(theta[th]*PI/180.0f), 2) - 1) +
+                                     outputChromo.genotype[1][3]*(1/4.0)*sqrt(7/PI)*(5*pow(cos(theta[th]*PI/180.0f),3)- 3*cos(theta[th]*PI/180.0f)) +
+                                     outputChromo.genotype[1][4]*(3/16.0)*sqrt(1/PI)*(35*pow(cos(theta[th]*PI/180.0f),4) - 30*pow(cos(theta[th]*PI/180.0f),2)+3) +
+                                     outputChromo.genotype[1][5]*(1/16.0)*sqrt(11/PI)*(15*cos(theta[th]*PI/180.0f) - 70*pow(cos(theta[th]*PI/180.0f),3)+63*pow(cos(theta[th]*PI/180.0f),5)) +
+                                     outputChromo.genotype[1][6]*(1/32.0)*sqrt(13/PI)*(-5 + 105*pow(cos(theta[th]*PI/180.0f),2)-315*pow(cos(theta[th]*PI/180.0f),4) + 231*pow(cos(theta[th]*PI/180.0f),6)) +
+                                     outputChromo.genotype[1][7]*(1/32.0)*sqrt(15/PI)*(-35*cos(theta[th]*PI/180.0f)+ 315*pow(cos(theta[th]*PI/180.0f),3) -693*pow(cos(theta[th]*PI/180.0f),5) + 429*pow(cos(theta[th]*PI/180.0f),7)) +
+                                     outputChromo.genotype[1][8]*(1/256.0)*sqrt(17/PI)*(35 - 1260*pow(cos(theta[th]*PI/180.0f),2) + 6930*pow(cos(theta[th]*PI/180.0f),4) - 12012*pow(cos(theta[th]*PI/180.0f),6) + 6435*pow((cos(theta[th]*PI/180.0f)),8)) +
+                                     outputChromo.genotype[1][9]*(1/256.0)*sqrt(19/PI)*(315*cos(theta[th]*PI/180.0f)- 4620*pow(cos(theta[th]*PI/180.0f),3) + 18018*pow(cos(theta[th]*PI/180.0f),5) - 25740*pow(cos(theta[th]*PI/180.0f),7) + 12155*pow((cos(theta[th]*PI/180.0f)),9)) +
+                                     outputChromo.genotype[1][10]*(1/512.0)*sqrt(21/PI)*(-63 +3465*pow(cos(theta[th]*PI/180.0f),2) - 30030*pow(cos(theta[th]*PI/180.0f),4) + 90090*pow(cos(theta[th]*PI/180.0f),6) -109395*pow((cos(theta[th]*PI/180.0f)),8)+46189*pow(cos(theta[th]*PI/180.0f),10)) +  
+                                     outputChromo.genotype[1][11]*(1/512.0)*sqrt(23/PI)*(-693*pow(cos(theta[th]*PI/180.0f),1) +15015*pow(cos(theta[th]*PI/180.0f),3) - 90090*pow(cos(theta[th]*PI/180.0f),5) +218790*pow((cos(theta[th]*PI/180.0f)),7)-230945*pow(cos(theta[th]*PI/180.0f),9)+88179*pow(cos(theta[th]*PI/180.0f),11)) +
+                                     outputChromo.genotype[1][12]*(1/2048.0)*sqrt(25/PI)*(231 -18018*pow(cos(theta[th]*PI/180.0f),2) +225225*pow(cos(theta[th]*PI/180.0f),4) - 1021020*pow(cos(theta[th]*PI/180.0f),6) +2078505*pow((cos(theta[th]*PI/180.0f)),8)-1939938*pow(cos(theta[th]*PI/180.0f),10)+676039*pow(cos(theta[th]*PI/180.0f),12))*180/PI,180));
 
                     output  << theta[th] << " \t " << phi[p] << " \t " << gainDB[f][p][th] << "     \t   " << gain[f][p][th] << "     \t    " << phase[f][p][th] << endl; 
 
@@ -1408,6 +1477,9 @@ int constraints(Chromosome &chromo)
     vector<double> theta(numTh, 0);
     vector<vector<double>> gain(60, vector<double>(numTh, 0));
 
+    //BRYAN- variable to hold overall minimum gain across all freq
+    double overallMinGain = 0;
+
     // Populate the theta array from 0-180 deg
     for (int th = 1; th < numTh; th++)
     {
@@ -1417,10 +1489,11 @@ int constraints(Chromosome &chromo)
     for(int f = 0; f < 60; f++)
     {
         // Evaluate the power gain at each theta by exapnding the spherical harmonic coefficents
-        chromo.genotype[f][0] = 2*sqrt(M_PI);
+        chromo.genotype[0][0] = 2*sqrt(M_PI);
         for(int th = 0; th < numTh; th++)
         {   
-        
+  
+/*      
             gain[f][th] = chromo.genotype[f][0]*(1/2.0)*(1/sqrt(M_PI)) +
                       chromo.genotype[f][1]*(1/2.0)*sqrt(3/M_PI)*cos(theta[th]*M_PI/180.0f) +
                       chromo.genotype[f][2]*(1/4.0)*sqrt(5/M_PI)*(3*pow(cos(theta[th]*M_PI/180.0f), 2)- 1) +
@@ -1434,7 +1507,22 @@ int constraints(Chromosome &chromo)
                       chromo.genotype[f][10]*(1/512.0)*sqrt(21/M_PI)*(-63 + 3465*pow(cos(theta[th]*M_PI/180.0f),2) - 30030*pow(cos(theta[th]*M_PI/180.0f),4) + 90090*pow(cos(theta[th]*M_PI/180.0f),6) -109395*pow((cos(theta[th]*M_PI/180.0f)),8)+46189*pow(cos(theta[th]*M_PI/180.0f),10)) +  
                       chromo.genotype[f][11]*(1/512.0)*sqrt(23/M_PI)*(-693*pow(cos(theta[th]*M_PI/180.0f),1) +15015*pow(cos(theta[th]*M_PI/180.0f),3) - 90090*pow(cos(theta[th]*M_PI/180.0f),5) +218790*pow((cos(theta[th]*M_PI/180.0f)),7)-230945*pow(cos(theta[th]*M_PI/180.0f),9)+88179*pow(cos(theta[th]*M_PI/180.0f),11)) +
                       chromo.genotype[f][12]*(1/2048.0)*sqrt(25/M_PI)*(231 -18018*pow(cos(theta[th]*M_PI/180.0f),2) +225225*pow(cos(theta[th]*M_PI/180.0f),4) - 1021020*pow(cos(theta[th]*M_PI/180.0f),6) +2078505*pow((cos(theta[th]*M_PI/180.0f)),8)-1939938*pow(cos(theta[th]*M_PI/180.0f),10)+676039*pow(cos(theta[th]*M_PI/180.0f),12));
+*/
                    //chromo.genotype[0][12]*(1/2048.0)*sqrt(27/M_PI)*(3003*pow(cos(theta[th]*M_PI/180.0f),1) -90090*pow(cos(theta[th]*M_PI/180.0f),3)+765765*pow(cos(theta[th]*M_PI/180.0f),5)-2771340*pow((cos(theta[th]*M_PI/180.0f)),7)+4849845*pow(cos(theta[th]*M_PI/180.0f),9)-4056234*pow(cos(theta[th]*M_PI/180.0f),11) + 1300075*pow(cos(theta[th]*M_PI/180.0f),13));
+
+	    gain[f][th] = (1+(chromo.genotype[0][13]*(16.67*f)/83.33))*(chromo.genotype[0][0]*(1/2.0)*(1/sqrt(PI)) +
+                                     chromo.genotype[0][1]*(1/2.0)*sqrt(3/PI)*cos(theta[th]*PI/180.0f) +
+                                     chromo.genotype[0][2]*(1/4.0)*sqrt(5/PI)*(3*pow(cos(theta[th]*PI/180.0f), 2)- 1) +
+                                     chromo.genotype[0][3]*(1/4.0)*sqrt(7/PI)*(5*pow(cos(theta[th]*PI/180.0f),3)- 3*cos(theta[th]*PI/180.0f)) +
+                                     chromo.genotype[0][4]*(3/16.0)*sqrt(1/PI)*(35*pow(cos(theta[th]*PI/180.0f),4) - 30*pow(cos(theta[th]*PI/180.0f),2)+3) +
+                                     chromo.genotype[0][5]*(1/16.0)*sqrt(11/PI)*(15*cos(theta[th]*PI/180.0f) - 70*pow(cos(theta[th]*PI/180.0f),3)+63*pow(cos(theta[th]*PI/180.0f),5)) +
+                                     chromo.genotype[0][6]*(1/32.0)*sqrt(13/PI)*(-5 + 105*pow(cos(theta[th]*PI/180.0f),2)-315*pow(cos(theta[th]*PI/180.0f),4) + 231*pow(cos(theta[th]*PI/180.0f),6)) +
+                                     chromo.genotype[0][7]*(1/32.0)*sqrt(15/PI)*(-35*cos(theta[th]*PI/180.0f)+ 315*pow(cos(theta[th]*PI/180.0f),3) -693*pow(cos(theta[th]*PI/180.0f),5) + 429*pow(cos(theta[th]*PI/180.0f),7)) +
+                                     chromo.genotype[0][8]*(1/256.0)*sqrt(17/PI)*(35 - 1260*pow(cos(theta[th]*PI/180.0f),2) + 6930*pow(cos(theta[th]*PI/180.0f),4) - 12012*pow(cos(theta[th]*PI/180.0f),6) + 6435*pow((cos(theta[th]*PI/180.0f)),8)) +
+                                     chromo.genotype[0][9]*(1/256.0)*sqrt(19/PI)*(315*cos(theta[th]*PI/180.0f)- 4620*pow(cos(theta[th]*PI/180.0f),3) + 18018*pow(cos(theta[th]*PI/180.0f),5) - 25740*pow(cos(theta[th]*PI/180.0f),7) + 12155*pow((cos(theta[th]*PI/180.0f)),9)) +
+                                     chromo.genotype[0][10]*(1/512.0)*sqrt(21/PI)*(-63 +3465*pow(cos(theta[th]*PI/180.0f),2) - 30030*pow(cos(theta[th]*PI/180.0f),4) + 90090*pow(cos(theta[th]*PI/180.0f),6) -109395*pow((cos(theta[th]*PI/180.0f)),8)+46189*pow(cos(theta[th]*PI/180.0f),10)) +  
+                                     chromo.genotype[0][11]*(1/512.0)*sqrt(23/PI)*(-693*pow(cos(theta[th]*PI/180.0f),1) +15015*pow(cos(theta[th]*PI/180.0f),3) - 90090*pow(cos(theta[th]*PI/180.0f),5) +218790*pow((cos(theta[th]*PI/180.0f)),7)-230945*pow(cos(theta[th]*PI/180.0f),9)+88179*pow(cos(theta[th]*PI/180.0f),11)) +
+                                     chromo.genotype[0][12]*(1/2048.0)*sqrt(25/PI)*(231 -18018*pow(cos(theta[th]*PI/180.0f),2) +225225*pow(cos(theta[th]*PI/180.0f),4) - 1021020*pow(cos(theta[th]*PI/180.0f),6) +2078505*pow((cos(theta[th]*PI/180.0f)),8)-1939938*pow(cos(theta[th]*PI/180.0f),10)+676039*pow(cos(theta[th]*PI/180.0f),12)));
         }
 
 
@@ -1444,18 +1532,33 @@ int constraints(Chromosome &chromo)
             if(gain[f][i] < minGain)
             {
                 minGain = gain[f][i];
+		//BRYAN- find overall minimum gain value across all freqs/thetas
+		//cout << "debug: minGain inside of loop: " << minGain << endl;
+		if(minGain < overallMinGain){
+		  overallMinGain = minGain;
+		  //cout << "debug: overallMinGain inside of loop: " << overallMinGain << endl;
+		}
             }
         }
+    }
 
-
-        if(minGain < 0)
+    //BRYAN- moved outside of freq loop to only rescale the coefficients once on overall minimum gain value
+    //cout << "debug: overallMinGain outside of loop: " << overallMinGain << endl; 
+    if(overallMinGain < 0)
+    {
+        //BRYAN- How to handle the constrain with the freq dependence scalar term?
+	//try: change 13->14 in loop to include scaler parameter
+	//change f->0 in genotype for single freq evolution
+	/*
+          for(int j = 1; j < 13; j++)
+          {
+              chromo.genotype[f][j] = (1/(1-minGain))*chromo.genotype[f][j];
+          }
+	*/
+	for(int j = 0; j < 13; j++)
         {
-            for(int j = 1; j < 13; j++)
-            {
-                chromo.genotype[f][j] = (1/(1-minGain))*chromo.genotype[f][j];
-            }
+            chromo.genotype[0][j] = (1/(1-overallMinGain))*chromo.genotype[0][j];
         }
-
     }
 
 
