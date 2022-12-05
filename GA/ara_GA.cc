@@ -701,8 +701,6 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
                         string :: size_type sz;
 
                         // Store a data element in the dataVector
-			//cout << "debug: this is the element:" << element << endl;
-			//cout << "debug: this is the lineNum:" << lineNum << endl;
                         dataVector[rowCount][columnCount] = stof(element, &sz);
 
                         // Increment column index
@@ -1533,17 +1531,14 @@ int constraints(Chromosome &chromo)
             {
                 minGain = gain[f][i];
 		//BRYAN- find overall minimum gain value across all freqs/thetas
-		//cout << "debug: minGain inside of loop: " << minGain << endl;
-		if(minGain < overallMinGain){
+	        if(minGain < overallMinGain){
 		  overallMinGain = minGain;
-		  //cout << "debug: overallMinGain inside of loop: " << overallMinGain << endl;
 		}
             }
         }
     }
 
     //BRYAN- moved outside of freq loop to only rescale the coefficients once on overall minimum gain value
-    //cout << "debug: overallMinGain outside of loop: " << overallMinGain << endl; 
     if(overallMinGain < 0)
     {
         //BRYAN- when only evolving for one frequency and extrapolating out the other gain patterns, use overallMinGain to rescale the coefficients
