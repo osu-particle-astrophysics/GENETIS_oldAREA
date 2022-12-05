@@ -701,8 +701,8 @@ int readCoeff(string filePath, DataType dataType, vector<vector<double>> &dataVe
                         string :: size_type sz;
 
                         // Store a data element in the dataVector
-			cout << "debug: this is the element:" << element << endl;
-			cout << "debug: this is the lineNum:" << lineNum << endl;
+			//cout << "debug: this is the element:" << element << endl;
+			//cout << "debug: this is the lineNum:" << lineNum << endl;
                         dataVector[rowCount][columnCount] = stof(element, &sz);
 
                         // Increment column index
@@ -1546,16 +1546,11 @@ int constraints(Chromosome &chromo)
     //cout << "debug: overallMinGain outside of loop: " << overallMinGain << endl; 
     if(overallMinGain < 0)
     {
-        //BRYAN- How to handle the constrain with the freq dependence scalar term?
-	//try: change 13->14 in loop to include scaler parameter
-	//change f->0 in genotype for single freq evolution
-	/*
-          for(int j = 1; j < 13; j++)
-          {
-              chromo.genotype[f][j] = (1/(1-minGain))*chromo.genotype[f][j];
-          }
-	*/
-	for(int j = 0; j < 13; j++)
+        //BRYAN- when only evolving for one frequency and extrapolating out the other gain patterns, use overallMinGain to rescale the coefficients
+        //For now, not rescaling the linear dependence coefficient (chromo.genotype[0][13]). To do this, would just change the below loop limit from 13->14
+        //NOTE: This loop starts at 1 because the energ conservation constraint defines the first coefficient (chromo.genotype[0][0] as 2*sqrt(pi))
+	
+	for(int j = 1; j < 13; j++)
         {
             chromo.genotype[0][j] = (1/(1-overallMinGain))*chromo.genotype[0][j];
         }
