@@ -901,6 +901,7 @@ int writeCoeff(ofstream &outFile, DataType dataType, Chromosome &outputChromo)
 	      //BRYAN- only evolving 60th freq for phase
 	      //output << outputChromo.genotype[i][j] << "\n";
 	      output << outputChromo.genotype[i][j] << "\n";
+
             }else{
 	      //BRYAN- only evolving 60th freq for phase
 	      //output << outputChromo.genotype[i][j] << ",";
