@@ -25,12 +25,13 @@
 #		For AREA:
 #			python polar_plotter.py ~/AREA/GA/Runs/$RUNNAME/#GEN_CNT ~/AREA/GA/Runs/$RUNNAME/$GEN_CNT FREQNUM(1-60) 0 24
 ## Imports
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import argparse
 import csv
+import argparse
+
+import numpy as np
+import pandas as pd
 import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 #
 #
 #
@@ -64,9 +65,9 @@ azimuthGainEnd = ((g.freq_num-1)*2668)+40
 for i in range(g.initial_antenna, g.final_antenna+1):
 	# Gains
 	## Open the file to read
-	with open(g.source1 + "/" + "child" + "_" + str(i) + ".txt", "r") as f:
+	with open(g.source1 + "/child_" + str(i) + ".txt", "r") as f:
 		## Read in the file
-		uan_read = csv.reader(f, delimiter = ' ')
+		uan_read = csv.reader(f, delimiter=' ')
 		## Declare list to hold azimuth gains
 		azimuth_gain = []
 		for m, row in enumerate(uan_read):
@@ -136,7 +137,7 @@ print(len(gains))
 # Make a list for the zenith angles
 zenith_angles = []
 flipped_zenith_angles = [] ## For making a version with realized gains on the other side
-for i in range(0, 37):
+for i in range(37):
 	zenith_angles.append(i*5*np.pi/180)
 	flipped_zenith_angles.append(-i*5*np.pi/180)
 #
@@ -148,7 +149,7 @@ colors = cm.rainbow(np.linspace(0, 1, g.final_antenna - g.initial_antenna + 1))
 print(len(zenith_angles))
 
 ## Let's make a figure where the lines are overlayed
-fig, ax = plt.subplots(subplot_kw={'projection': 'polar'}, figsize = (10, 8))
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'}, figsize=(10, 8))
 ax.set_theta_zero_location("N")
 ax.set_rlabel_position(225)
 for i in range(0, g.final_antenna - g.initial_antenna + 1):
